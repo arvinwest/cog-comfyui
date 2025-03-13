@@ -4,6 +4,7 @@ import os
 import json
 import custom_node_helpers as helpers
 from config import config
+from weights_custom import contact_with_custom_weights
 
 USER_WEIGHTS_MANIFEST_PATH = config["USER_WEIGHTS_MANIFEST_PATH"]
 REMOTE_WEIGHTS_MANIFEST_URL = config["REMOTE_WEIGHTS_MANIFEST_URL"]
@@ -12,7 +13,6 @@ WEIGHTS_MANIFEST_PATH = "weights.json"
 WEIGHTS_SYNONYMS_PATH = "weight_synonyms.json"
 BASE_URL = config["WEIGHTS_BASE_URL"]
 MODELS_PATH = config["MODELS_PATH"]
-
 
 class WeightsManifest:
     @staticmethod
@@ -26,6 +26,8 @@ class WeightsManifest:
         self.weights_manifest = self._load_weights_manifest()
         self.synonyms = self._initialize_synonyms()
         self.weights_map = self._initialize_weights_map()
+        self.weights_map = contact_with_custom_weights(self.weights_map)
+        print(json.dumps(self.weights_map, indent=2))
 
     def _load_weights_manifest(self):
         if self.download_latest_weights_manifest:
