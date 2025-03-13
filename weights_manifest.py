@@ -27,7 +27,7 @@ class WeightsManifest:
         self.synonyms = self._initialize_synonyms()
         self.weights_map = self._initialize_weights_map()
         self.weights_map = contact_with_custom_weights(self.weights_map)
-        print(json.dumps(self.weights_map, indent=2))
+        print(json.dumps(self.weights_map, indent=4))
 
     def _load_weights_manifest(self):
         if self.download_latest_weights_manifest:

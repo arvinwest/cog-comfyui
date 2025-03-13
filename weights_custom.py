@@ -91,28 +91,91 @@ def convert_custom_weights_format(custom_weights):
     # Convert CHECKPOINTS
     if "CHECKPOINTS" in custom_weights:
         for item in custom_weights["CHECKPOINTS"]:
-            converted[item["name"]] = {"url": item["url"], "type": "checkpoints"}
+            converted[item["name"]] = {
+                "url": item["url"],
+                "dest": "ComfyUI/models/checkpoints"
+            }
 
     # Convert VAE
     if "VAE" in custom_weights:
         for item in custom_weights["VAE"]:
-            converted[item["name"]] = {"url": item["url"], "type": "vae"}
+            converted[item["name"]] = {
+                "url": item["url"],
+                "dest": "ComfyUI/models/vae"
+            }
 
     # Convert LORAS
     if "LORAS" in custom_weights:
         for item in custom_weights["LORAS"]:
-            converted[item["name"]] = {"url": item["url"], "type": "loras"}
+            converted[item["name"]] = {
+                "url": item["url"],
+                "dest": "ComfyUI/models/loras"
+            }
 
     # Convert CLIP_VISION
     if "CLIP_VISION" in custom_weights:
         for item in custom_weights["CLIP_VISION"]:
-            converted[item["name"]] = {"url": item["url"], "type": "clip_vision"}
+            converted[item["name"]] = {
+                "url": item["url"],
+                "dest": "ComfyUI/models/clip_vision"
+            }
+
+    # Convert CLIP
+    if "CLIP" in custom_weights:
+        for item in custom_weights["CLIP"]:
+            converted[item["name"]] = {
+                "url": item["url"],
+                "dest": "ComfyUI/models/clip"
+            }
+
+    # Convert CONTROLNET
+    if "CONTROLNET" in custom_weights:
+        for item in custom_weights["CONTROLNET"]:
+            converted[item["name"]] = {
+                "url": item["url"],
+                "dest": "ComfyUI/models/controlnet"
+            }
+
+    # Convert INSTANTID
+    if "INSTANTID" in custom_weights:
+        for item in custom_weights["INSTANTID"]:
+            converted[item["name"]] = {
+                "url": item["url"],
+                "dest": "ComfyUI/models/instantid"
+            }
+
+    # Convert xlabs/ipadapters
+    if "xlabs/ipadapters" in custom_weights:
+        for item in custom_weights["xlabs/ipadapters"]:
+            converted[item["name"]] = {
+                "url": item["url"],
+                "dest": "ComfyUI/models/xlabs/ipadapters"
+            }
+
+    # Convert LLavacheckpoints
+    if "LLavacheckpoints" in custom_weights:
+        for item in custom_weights["LLavacheckpoints"]:
+            converted[item["name"]] = {
+                "url": item["url"],
+                "dest": "ComfyUI/models/llava"
+            }
 
     return converted
 
 
 def contact_with_custom_weights(weights_manifest):
     """Contact with custom weights"""
+    # Ensure we're working with a mutable dictionary
+    if not isinstance(weights_manifest, dict):
+        weights_manifest = dict(weights_manifest)
+    
     converted = convert_custom_weights_format(local_custom_weights)
-    weights_manifest.update(converted)
+    print("Converted custom weights:", converted)
+    print("Original weights_manifest:", weights_manifest)
+    
+    # Update the dictionary
+    for key, value in converted.items():
+        weights_manifest[key] = value
+    
+    print("Updated weights_manifest:", weights_manifest)
     return weights_manifest
