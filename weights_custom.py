@@ -57,6 +57,10 @@ local_custom_weights = {
             "name": "siglip-so400m-patch14-384.safetensors",
             "url": "https://replicate.delivery/pbxt/MZN9ZOsYucYVRSvlMfMyglRDTHe3KyoD1nlwbxnweU3AH2rT/upload.tar",
         },
+        {
+            "name": "pt-clip-vit-large-patch14.bin",
+            "url": "https://huggingface.co/openai/clip-vit-large-patch14/resolve/main/pytorch_model.bin",
+        },
     ],
     "CONTROLNET": [
         {
@@ -93,23 +97,20 @@ def convert_custom_weights_format(custom_weights):
         for item in custom_weights["CHECKPOINTS"]:
             converted[item["name"]] = {
                 "url": item["url"],
-                "dest": "ComfyUI/models/checkpoints"
+                "dest": "ComfyUI/models/checkpoints",
             }
 
     # Convert VAE
     if "VAE" in custom_weights:
         for item in custom_weights["VAE"]:
-            converted[item["name"]] = {
-                "url": item["url"],
-                "dest": "ComfyUI/models/vae"
-            }
+            converted[item["name"]] = {"url": item["url"], "dest": "ComfyUI/models/vae"}
 
     # Convert LORAS
     if "LORAS" in custom_weights:
         for item in custom_weights["LORAS"]:
             converted[item["name"]] = {
                 "url": item["url"],
-                "dest": "ComfyUI/models/loras"
+                "dest": "ComfyUI/models/loras",
             }
 
     # Convert CLIP_VISION
@@ -117,7 +118,7 @@ def convert_custom_weights_format(custom_weights):
         for item in custom_weights["CLIP_VISION"]:
             converted[item["name"]] = {
                 "url": item["url"],
-                "dest": "ComfyUI/models/clip_vision"
+                "dest": "ComfyUI/models/clip_vision",
             }
 
     # Convert CLIP
@@ -125,7 +126,7 @@ def convert_custom_weights_format(custom_weights):
         for item in custom_weights["CLIP"]:
             converted[item["name"]] = {
                 "url": item["url"],
-                "dest": "ComfyUI/models/clip"
+                "dest": "ComfyUI/models/clip",
             }
 
     # Convert CONTROLNET
@@ -133,7 +134,7 @@ def convert_custom_weights_format(custom_weights):
         for item in custom_weights["CONTROLNET"]:
             converted[item["name"]] = {
                 "url": item["url"],
-                "dest": "ComfyUI/models/controlnet"
+                "dest": "ComfyUI/models/controlnet",
             }
 
     # Convert INSTANTID
@@ -141,7 +142,7 @@ def convert_custom_weights_format(custom_weights):
         for item in custom_weights["INSTANTID"]:
             converted[item["name"]] = {
                 "url": item["url"],
-                "dest": "ComfyUI/models/instantid"
+                "dest": "ComfyUI/models/instantid",
             }
 
     # Convert xlabs/ipadapters
@@ -149,7 +150,7 @@ def convert_custom_weights_format(custom_weights):
         for item in custom_weights["xlabs/ipadapters"]:
             converted[item["name"]] = {
                 "url": item["url"],
-                "dest": "ComfyUI/models/xlabs/ipadapters"
+                "dest": "ComfyUI/models/xlabs/ipadapters",
             }
 
     # Convert LLavacheckpoints
@@ -157,7 +158,7 @@ def convert_custom_weights_format(custom_weights):
         for item in custom_weights["LLavacheckpoints"]:
             converted[item["name"]] = {
                 "url": item["url"],
-                "dest": "ComfyUI/models/llava"
+                "dest": "ComfyUI/models/llava",
             }
 
     return converted
@@ -168,14 +169,14 @@ def contact_with_custom_weights(weights_manifest):
     # Ensure we're working with a mutable dictionary
     if not isinstance(weights_manifest, dict):
         weights_manifest = dict(weights_manifest)
-    
+
     converted = convert_custom_weights_format(local_custom_weights)
     print("Converted custom weights:", converted)
     print("Original weights_manifest:", weights_manifest)
-    
+
     # Update the dictionary
     for key, value in converted.items():
         weights_manifest[key] = value
-    
+
     print("Updated weights_manifest:", weights_manifest)
     return weights_manifest
