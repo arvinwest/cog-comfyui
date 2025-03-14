@@ -262,5 +262,9 @@
   {
     "repo": "https://github.com/Lightricks/ComfyUI-LTXVideo",
     "commit": "e2a7351"
+  },
+  {
+    "repo": "https://github.com/chflame163/ComfyUI_LayerStyle.git",
+    "commit": "4b273d4"
   }
 ]
