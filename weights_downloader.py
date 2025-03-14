@@ -73,9 +73,17 @@ class WeightsDownloader:
 
         print(f"⏳ Downloading {weight_str} to {dest}")
         start = time.time()
-        subprocess.check_call(
-            ["pget", "--log-level", "warn", "-xf", url, dest], close_fds=False
-        )
+        
+        # Don't use -x flag for .bin files
+        if weight_str.endswith('.bin'):
+            subprocess.check_call(
+                ["pget", "--log-level", "warn", "-f", url, dest], close_fds=False
+            )
+        else:
+            subprocess.check_call(
+                ["pget", "--log-level", "warn", "-xf", url, dest], close_fds=False
+            )
+            
         elapsed_time = time.time() - start
         try:
             file_size_bytes = os.path.getsize(

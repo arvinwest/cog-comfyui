@@ -36,6 +36,8 @@ jobs:
           ls -al ComfyUI/custom_nodes
           python ./scripts/install_custom_nodes.py
           ls -al ComfyUI/custom_nodes
+          python ./scripts/get_weights.py ./demo_workflow.json
+          tree ComfyUI/models
  
       - name: Setup Cog
         uses: replicate/setup-cog@v2

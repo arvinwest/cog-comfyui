@@ -1,0 +1,141 @@
+{
+  "2": {
+    "inputs": {
+      "image": "https://public-cdn-089-dev.atcloudbox.com/arvin_server/img_ai_painter/U/s3_j3bCn3Akjd56g6b48bYo8G.png",
+      "upload": "image"
+    },
+    "class_type": "LoadImage",
+    "_meta": { "title": "Load Image" }
+  },
+  "4": {
+    "inputs": {
+      "text": "create a logo",
+      "speak_and_recognation": true,
+      "clip": ["7", 0]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": { "title": "CLIP Text Encode (Positive Prompt)" }
+  },
+  "5": {
+    "inputs": { "samples": ["9", 0], "vae": ["6", 0] },
+    "class_type": "VAEDecode",
+    "_meta": { "title": "VAE Decode" }
+  },
+  "6": {
+    "inputs": { "vae_name": "ae.safetensors" },
+    "class_type": "VAELoader",
+    "_meta": { "title": "Load VAE" }
+  },
+  "7": {
+    "inputs": {
+      "clip_name1": "t5xxl_fp16.safetensors",
+      "clip_name2": "clip_l.safetensors",
+      "type": "flux"
+    },
+    "class_type": "DualCLIPLoader",
+    "_meta": { "title": "DualCLIPLoader" }
+  },
+  "8": {
+    "inputs": {
+      "unet_name": "flux1-dev.safetensors",
+      "weight_dtype": "fp8_e4m3fn"
+    },
+    "class_type": "UNETLoader",
+    "_meta": { "title": "Load Diffusion Model" }
+  },
+  "9": {
+    "inputs": {
+      "noise": ["13", 0],
+      "guider": ["12", 0],
+      "sampler": ["10", 0],
+      "sigmas": ["11", 0],
+      "latent_image": ["24", 0]
+    },
+    "class_type": "SamplerCustomAdvanced",
+    "_meta": { "title": "SamplerCustomAdvanced" }
+  },
+  "10": {
+    "inputs": { "sampler_name": "euler" },
+    "class_type": "KSamplerSelect",
+    "_meta": { "title": "KSamplerSelect" }
+  },
+  "11": {
+    "inputs": {
+      "scheduler": "simple",
+      "steps": 1,
+      "denoise": 0.9,
+      "model": ["30", 0]
+    },
+    "class_type": "BasicScheduler",
+    "_meta": { "title": "BasicScheduler" }
+  },
+  "12": {
+    "inputs": { "model": ["30", 0], "conditioning": ["14", 0] },
+    "class_type": "BasicGuider",
+    "_meta": { "title": "BasicGuider" }
+  },
+  "13": {
+    "inputs": { "noise_seed": 593584106 },
+    "class_type": "RandomNoise",
+    "_meta": { "title": "RandomNoise" }
+  },
+  "14": {
+    "inputs": { "guidance": 3.5, "conditioning": ["4", 0] },
+    "class_type": "FluxGuidance",
+    "_meta": { "title": "FluxGuidance" }
+  },
+  "22": {
+    "inputs": {
+      "ip_scale": 0.4,
+      "model": ["8", 0],
+      "ip_adapter_flux": ["23", 0],
+      "image": ["2", 0],
+      "strength_model": 0.5
+    },
+    "class_type": "ApplyFluxIPAdapter",
+    "_meta": { "title": "Apply Flux IPAdapter" }
+  },
+  "23": {
+    "inputs": {
+      "ipadatper": "flux-ip-adapter-v2.safetensors",
+      "clip_vision": "pt-clip-vit-large-patch14.bin",
+      "provider": "GPU"
+    },
+    "class_type": "LoadFluxIPAdapter",
+    "_meta": { "title": "Load Flux IPAdatpter" }
+  },
+  "24": {
+    "inputs": { "pixels": ["25", 0], "vae": ["6", 0] },
+    "class_type": "VAEEncode",
+    "_meta": { "title": "VAE Encode" }
+  },
+  "25": {
+    "inputs": {
+      "width": 16,
+      "height": 16,
+      "upscale_method": "nearest-exact",
+      "keep_proportion": false,
+      "divisible_by": 2,
+      "crop": "center",
+      "image": ["2", 0]
+    },
+    "class_type": "ImageResizeKJ",
+    "_meta": { "title": "Resize Image" }
+  },
+  "30": {
+    "inputs": {
+      "max_shift": 1.15,
+      "base_shift": 0.5,
+      "width": 16,
+      "height": 16,
+      "model": ["22", 0]
+    },
+    "class_type": "ModelSamplingFlux",
+    "_meta": { "title": "ModelSamplingFlux" }
+  },
+  "40": {
+    "inputs": { "filename_prefix": "ComfyUI", "images": ["5", 0] },
+    "class_type": "SaveImage",
+    "_meta": { "title": "Save Image" }
+  }
+}
