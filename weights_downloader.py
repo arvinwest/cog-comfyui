@@ -71,41 +71,45 @@ class WeightsDownloader:
             dest = os.path.join(dest, subfolder)
             os.makedirs(dest, exist_ok=True)
 
-        print(f"⏳ Downloading {weight_str} to {dest}")
+        # Construct the full destination path including the filename
+        dest_path = os.path.join(dest, os.path.basename(weight_str))
+        print(f"⏳ Downloading {weight_str} to {dest_path}")
         start = time.time()
         
         # Check if the file is a tar archive or needs extraction
-        is_tar = weight_str.endswith(('.tar', '.tar.gz', '.tgz', '.tar.bz2', '.tbz2'))
+        is_tar = url.endswith(('.tar', '.tar.gz', '.tgz', '.tar.bz2', '.tbz2'))
         needs_extraction = is_tar
         
-        # Use appropriate flags based on file type
-        if needs_extraction:
-            # For tar archives, use -xf to auto-extract
-            subprocess.check_call(
-                ["pget", "--log-level", "warn", "-xf", url, dest], close_fds=False
-            )
-        else:
-            # For all other files, use -f to just download
-            subprocess.check_call(
-                ["pget", "--log-level", "warn", "-f", url, dest], close_fds=False
-            )
-            
-        elapsed_time = time.time() - start
         try:
-            # Get the full path of the downloaded file
-            file_path = os.path.join(dest, os.path.basename(weight_str))
-            if os.path.exists(file_path):
-                file_size_bytes = os.path.getsize(file_path)
-                file_size_megabytes = file_size_bytes / (1024 * 1024)
-                print(
-                    f"✅ {weight_str} downloaded to {dest} in {elapsed_time:.2f}s, size: {file_size_megabytes:.2f}MB"
+            # Use appropriate flags based on file type
+            if needs_extraction:
+                # For tar archives, use -xf and point to the directory
+                subprocess.check_call(
+                    ["pget", "--log-level", "warn", "-xf", url, dest], close_fds=False
                 )
             else:
-                print(f"⚠️ File not found at expected path: {file_path}")
+                # For all other files, use -f and point to the full file path
+                subprocess.check_call(
+                    ["pget", "--log-level", "warn", "-f", url, dest_path], close_fds=False
+                )
+                
+            elapsed_time = time.time() - start
+            try:
+                if os.path.exists(dest_path):
+                    file_size_bytes = os.path.getsize(dest_path)
+                    file_size_megabytes = file_size_bytes / (1024 * 1024)
+                    print(
+                        f"✅ {weight_str} downloaded to {dest} in {elapsed_time:.2f}s, size: {file_size_megabytes:.2f}MB"
+                    )
+                else:
+                    print(f"⚠️ File not found at expected path: {dest_path}")
+                    print(f"✅ {weight_str} downloaded to {dest} in {elapsed_time:.2f}s")
+            except (FileNotFoundError, OSError) as e:
+                print(f"⚠️ Error checking file size: {str(e)}")
                 print(f"✅ {weight_str} downloaded to {dest} in {elapsed_time:.2f}s")
-        except (FileNotFoundError, OSError) as e:
-            print(f"⚠️ Error checking file size: {str(e)}")
-            print(f"✅ {weight_str} downloaded to {dest} in {elapsed_time:.2f}s")
+        except subprocess.CalledProcessError as e:
+            print(f"Failed to download {weight_str}: {str(e)}")
+            raise
 
     def delete_weights(self, weight_str):
         if weight_str in self.weights_map:
