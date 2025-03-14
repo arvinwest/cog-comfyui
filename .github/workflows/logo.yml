@@ -31,7 +31,6 @@ jobs:
       - name: Install dependencies
         run: |
           pwd 
-          cd ComfyUI && git fetch && git checkout v0.3.26 && cd -
           ls -al
           ls -al scripts
           ls -al ComfyUI/custom_nodes
